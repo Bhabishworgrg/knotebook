@@ -1,0 +1,20 @@
+[project]
+name = "knotebook"
+version = "0.1.0"
+description = "Make notes with markdown"
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+requires-python = ">=3.14"
+authors = [
+	{ name = "Bhabishwor Gurung", email = "bhabishwor@proton.me" }
+]
+
+[project.urls]
+"Repository" = "https://codeberg.org/bhabishwor/knotebook"
+
+[dependency-groups]
+docs = [
+    "mkdocs-material>=9.7.1",
+    "mkdocstrings[python]>=1.0.2",
+]
