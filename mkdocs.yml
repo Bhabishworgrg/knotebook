@@ -7,7 +7,11 @@ repo_name: bhabishwor/knotebook
 remote_branch: documentation
 
 nav:
-  - index.md
+  - Knotebook: index.md
+  - Get Started: 
+    - get_started/installation.md
+    - get_started/first_steps.md
+  - Changelog: changelog.md
 
 theme:
   name: material
