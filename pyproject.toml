@@ -9,12 +9,16 @@ requires-python = ">=3.14"
 authors = [
 	{ name = "Bhabishwor Gurung", email = "bhabishwor@proton.me" }
 ]
+dependencies = [
+    "mike>=2.1.3",
+]
 
 [project.urls]
 "Repository" = "https://codeberg.org/bhabishwor/knotebook"
 
 [dependency-groups]
 docs = [
+    "mkdocs-git-revision-date-localized-plugin>=1.5.1",
     "mkdocs-material>=9.7.1",
     "mkdocstrings[python]>=1.0.2",
 ]

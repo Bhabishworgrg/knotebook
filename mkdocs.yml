@@ -1,15 +1,60 @@
 site_name: Knotebook
+site_description: Knotebook | Make notes with markdown
+site_author: Bhabishwor Gurung
+
+repo_url: https://codeberg.org/bhabishwor/knotebook
+repo_name: bhabishwor/knotebook
+remote_branch: documentation
+
 nav:
-  - Home: index.md
+  - index.md
+
 theme:
   name: material
+  icon:
+    logo: material/notebook
+    repo: simple/codeberg
+  features:
+    - navigation.top
+    - navigation.tabs
+    - navigation.path
+    - navigation.footer
+    - toc.follow
+    - search.suggest
   palette:
-    - scheme: slate
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+
 extra:
-  generator: false
+  version:
+    provider: mike
+    default: latest
+    alias: true
+  social:
+    - icon: simple/codeberg
+      link: https://codeberg.org/bhabishwor
+      name: Codeberg
+    - icon: material/web
+      link: https://bhabishwor.com.np
+      name: Portfolio
+
 plugins:
+  - git-revision-date-localized
+  - search
   - mkdocstrings:
-      enabled: !ENV [ENABLE_MKDOCSTRINGS, true]
+      enabled: true
       default_handler: python
       locale: en
       handlers:
