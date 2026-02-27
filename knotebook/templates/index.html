@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>{{ title }}</title>
+</head>
+
+<body>
+	<div id='sigma-container' style='width: 100vw; height: 100vh;'></div>
+
+	<script type='module'>
+		import Sigma from 'https://cdn.jsdelivr.net/npm/sigma@3.0.2/+esm'
+		import Graph from 'https://cdn.jsdelivr.net/npm/graphology@0.26.0/+esm'
+		import ForceSupervisor from 'https://cdn.jsdelivr.net/npm/graphology-layout-force@0.2.4/+esm'
+		import chroma from 'https://cdn.jsdelivr.net/npm/chroma-js@3.2.0/+esm'
+
+		const nodes = {{ nodes | tojson }};
+		const edges = {{ edges | tojson }};
+
+		const graph = new Graph();
+
+		nodes.forEach((node) => {
+			graph.addNode(node.label, { color: chroma.random().hex(), size: node.size, x: 0, y: 0 });
+		});
+		edges.forEach((edge) => {
+			graph.addEdge(edge.source, edge.target, { color: 'black', size: 5 });
+		});
+
+		const renderer = new Sigma(graph, document.getElementById('sigma-container'), {
+			labelDensity: 1,
+			labelRenderedSizeThreshold: 0
+		});
+
+		const layout = new ForceSupervisor(graph, {
+			isNodeFixed: (_, attribute) => attribute.highlighted,
+			settings: {
+				attraction: 0.0005,
+				repulsion: 0.0008,
+				gravity: 0.0002,
+				inertia: 0.1,
+			}
+		});
+		layout.start();
+
+		let isClicked = false;
+		let draggedNode = null;
+		let isDragging = false;
+
+		renderer.on('downNode', (event) => {
+			isClicked = true;
+			isDragging = true;
+			draggedNode = event.node;
+
+			graph.setNodeAttribute(draggedNode, 'highlighted', true);
+
+			if (!renderer.getCustomBBox()) {
+				renderer.setCustomBBox(renderer.getBBox());
+			}
+		});
+
+		renderer.on('moveBody', ({ event }) => {
+			if (!isDragging || !draggedNode) {
+				return;
+			}
+
+			isClicked = false;
+
+			const position = renderer.viewportToGraph(event);
+
+			graph.setNodeAttribute(draggedNode, 'x', position.x);
+			graph.setNodeAttribute(draggedNode, 'y', position.y);
+
+			event.preventSigmaDefault();
+			event.original.preventDefault();
+			event.original.stopPropagation();
+		});
+
+		const handleUp = () => {
+			if (draggedNode) {
+				graph.removeNodeAttribute(draggedNode, 'highlighted');
+			}
+
+			isDragging = false;
+			draggedNode = null;
+		};
+
+		renderer.on('upNode', handleUp);
+		renderer.on('upStage', handleUp);
+		renderer.on('clickNode', (event) => {
+			if (isClicked) {
+				window.location.href = graph.getNodeAttributes(event.node).label;
+			}
+		});
+	</script>
