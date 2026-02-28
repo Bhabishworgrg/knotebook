@@ -1,5 +1,6 @@
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import unquote
 from http import HTTPStatus
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from knotebook.constants.content_type import ContentType
 from knotebook.renderer import Renderer
@@ -25,7 +26,7 @@ class DevHTTPHandler(BaseHTTPRequestHandler):
                 content = self.__renderer.render_exact(self.path.lstrip('/'))
                 content_type = ContentType.JS
             case _:
-                content = self.__renderer.render_page(self.path.lstrip('/'))
+                content = self.__renderer.render_page(unquote(self.path.lstrip('/').rstrip('.md')))
                 content_type = ContentType.HTML
 
         self.send_response(HTTPStatus.OK)

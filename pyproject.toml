@@ -11,6 +11,7 @@ authors = [
 ]
 dependencies = [
     "jinja2>=3.1.6",
+    "markdown>=3.10.1",
     "typer>=0.24.1",
 ]
 

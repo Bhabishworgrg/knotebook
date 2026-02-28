@@ -1,6 +1,7 @@
 from typing import Any
 from pathlib import Path
 from math import ceil, sqrt
+from markdown import markdown
 from itertools import product
 from importlib.resources import files
 from jinja2 import Environment, FileSystemLoader
@@ -12,6 +13,7 @@ class Renderer:
         self.__environment: Environment = Environment(
             loader=FileSystemLoader(str(files('knotebook').joinpath('templates')))
         )
+        self.__pages_path: Path = Path('pages').resolve()
 
 
     def __render_with_context(self, file: str, **context: Any) -> str:
@@ -23,14 +25,13 @@ class Renderer:
 
 
     def render_home(self):
-        pages_path: Path = Path('pages').resolve()
         pages: list[dict[str, Any]] = [
             {
                 'name': path.stem,
-                'parent': path.parent.stem if path.parent != pages_path else None,
-                'depth': len(path.relative_to(pages_path).parts)
+                'parent': path.parent.stem if path.parent != self.__pages_path else None,
+                'depth': len(path.relative_to(self.__pages_path).parts)
             }
-            for path in pages_path.rglob('*')
+            for path in self.__pages_path.rglob('*')
         ]
 
         grid_size: int = ceil(sqrt(len(pages)))
@@ -65,7 +66,15 @@ class Renderer:
 
 
     def render_page(self, page: str) -> str:
-        raise NotImplementedError
+        with open(self.__pages_path.joinpath(f'{page}.md'), 'r', encoding='utf-8') as file:
+            text = file.read()
+        html_content = markdown(text)
+
+        return self.__render_with_context(
+            file='page.html',
+            title=page,
+            content=html_content
+        )
 
 
     def render_exact(self, file: str) -> str:
