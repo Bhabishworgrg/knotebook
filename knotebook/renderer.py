@@ -1,5 +1,7 @@
 from typing import Any
 from pathlib import Path
+from math import ceil, sqrt
+from itertools import product
 from importlib.resources import files
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
@@ -31,14 +33,20 @@ class Renderer:
             for path in pages_path.rglob('*')
         ]
 
+        grid_size: int = ceil(sqrt(len(pages)))
+        coordinates: list[tuple[int, int]] = list(product(range(grid_size), range(grid_size)))
+
         nodes: list[dict[str, Any]] = []
         edges: list[dict[str, str]] = []
-        for page in pages:
+
+        for (x, y), page in zip(coordinates, pages):
             page_name: str = page['name']
             page_parent: str = page['parent']
 
             nodes.append({
                 'label': page_name,
+                'x': x,
+                'y': y,
                 'size': 40 / page['depth']
             })
 

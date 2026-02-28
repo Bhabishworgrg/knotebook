@@ -11,7 +11,7 @@
 	<script type='module'>
 		import Sigma from 'https://cdn.jsdelivr.net/npm/sigma@3.0.2/+esm'
 		import Graph from 'https://cdn.jsdelivr.net/npm/graphology@0.26.0/+esm'
-		import ForceSupervisor from 'https://cdn.jsdelivr.net/npm/graphology-layout-force@0.2.4/+esm'
+		import ForceSupervisor from 'https://cdn.jsdelivr.net/npm/graphology-layout-force@0.2.4/worker/+esm'
 		import chroma from 'https://cdn.jsdelivr.net/npm/chroma-js@3.2.0/+esm'
 
 		const nodes = {{ nodes | tojson }};
@@ -20,7 +20,7 @@
 		const graph = new Graph();
 
 		nodes.forEach((node) => {
-			graph.addNode(node.label, { color: chroma.random().hex(), size: node.size, x: 0, y: 0 });
+			graph.addNode(node.label, { color: chroma.random().hex(), ...node } )
 		});
 		edges.forEach((edge) => {
 			graph.addEdge(edge.source, edge.target, { color: 'black', size: 5 });
